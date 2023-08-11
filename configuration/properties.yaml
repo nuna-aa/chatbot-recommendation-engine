@@ -1,0 +1,17 @@
+# Configurations
+# Open AI Configurations
+openai:
+  apiKey: ""
+  temperature: 0.1
+  timeout: 10
+  maxRetry: 2
+  model: "gpt-3.5-turbo"
+text:
+  chunk:
+    size: 100
+    overlap: 20
+chroma:
+  collection: "osteoporosis"
+  directory: "vectors/"
+chain:
+  type: "map_reduce"
