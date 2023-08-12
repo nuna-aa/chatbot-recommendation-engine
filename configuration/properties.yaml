@@ -1,7 +1,7 @@
 # Configurations
 # Open AI Configurations
 openai:
-  apiKey: ""
+  apiKey: "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"
   temperature: 0.1
   timeout: 10
   maxRetry: 2
