@@ -62,7 +62,7 @@ def recommend(message: umr) -> Any:
 @app.get("/chat/history/", dependencies=[Depends(application_json)], response_model=ch)
 def recommend() -> Any:
     try:
-        history = reply.get_chat_history()
+        history = reply.load()
     except openai.error.OpenAIError as e:
         raise LLMResponseException(e.http_status, e.user_message, e.code)
     except Exception as e:
@@ -72,6 +72,16 @@ def recommend() -> Any:
 
 
 @app.delete("/chat/history/clear/", dependencies=[Depends(application_json)], response_model=ch)
+def recommend() -> Any:
+    try:
+        reply.clear_chat_history()
+    except openai.error.OpenAIError as e:
+        raise LLMResponseException(e.http_status, e.user_message, e.code)
+    except Exception as e:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        raise ResponseException(exc_value, exc_type)
+
+@app.put("/chat/load/", dependencies=[Depends(application_json)])
 def recommend() -> Any:
     try:
         reply.clear_chat_history()
