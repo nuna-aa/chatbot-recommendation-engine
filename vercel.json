@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "chatbot-recommendation-engine/main.py",
+      "src": "/controller/ApiServer.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "chatbot-recommendation-engine/main.py"
+      "dest": "controller/ApiServer.py"
     }
   ]
 }
