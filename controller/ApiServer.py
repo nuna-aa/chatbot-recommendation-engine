@@ -47,7 +47,7 @@ def application_json(content_type: str = Header(...)):
         )
 
 
-@app.post("/chat/", dependencies=[Depends(application_json)], response_model=um)
+@app.post("/chat", dependencies=[Depends(application_json)], response_model=um)
 def recommend(message: umr) -> Any:
     try:
         llm_response = reply.recommend(message.message)
@@ -59,7 +59,7 @@ def recommend(message: umr) -> Any:
     return llm_response
 
 
-@app.get("/chat/history/", dependencies=[Depends(application_json)], response_model=ch)
+@app.get("/chat/history", dependencies=[Depends(application_json)], response_model=ch)
 def recommend() -> Any:
     try:
         history = reply.get_chat_history()
@@ -71,7 +71,7 @@ def recommend() -> Any:
     return history
 
 
-@app.delete("/chat/history/clear/", dependencies=[Depends(application_json)], response_model=ch)
+@app.delete("/chat/history/clear", dependencies=[Depends(application_json)], response_model=ch)
 def recommend() -> Any:
     try:
         reply.clear_chat_history()
@@ -82,7 +82,7 @@ def recommend() -> Any:
         raise ResponseException(exc_value, exc_type)
 
 
-@app.put("/chat/data/reload/", dependencies=[Depends(application_json)])
+@app.put("/chat/data/reload", dependencies=[Depends(application_json)])
 def recommend() -> Any:
     try:
         reply.reload_datasources()

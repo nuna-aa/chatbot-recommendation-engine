@@ -54,10 +54,10 @@ class ChatModelService:
         return ConstitutionalChain.from_llm(
             chain=qa_chain,
             constitutional_principles=ep.context_principles,
-            llm= self.__chat,
+            llm=self.__chat,
             verbose=True)
 
     def __retrieval_qa_chain(self, vector_store):
         return RetrievalQA.from_chain_type(
-            llm=self.__chat, chain_type=self.__chain_type, retriever=vector_store.as_retriever(),
+            llm=self.__chat, chain_type=self.__chain_type, retriever=vector_store.as_retriever(search_type="mmr"),
             chain_type_kwargs={"prompt": self.__retrival_qa_prompt})
