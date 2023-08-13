@@ -62,7 +62,7 @@ def recommend(message: umr) -> Any:
 @app.get("/chat/history/", dependencies=[Depends(application_json)], response_model=ch)
 def recommend() -> Any:
     try:
-        history = reply.load()
+        history = reply.get_chat_history()
     except openai.error.OpenAIError as e:
         raise LLMResponseException(e.http_status, e.user_message, e.code)
     except Exception as e:
@@ -81,16 +81,17 @@ def recommend() -> Any:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         raise ResponseException(exc_value, exc_type)
 
-@app.put("/chat/load/", dependencies=[Depends(application_json)])
+
+@app.put("/chat/data/reload/", dependencies=[Depends(application_json)])
 def recommend() -> Any:
     try:
-        reply.clear_chat_history()
+        reply.reload_datasources()
     except openai.error.OpenAIError as e:
         raise LLMResponseException(e.http_status, e.user_message, e.code)
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         raise ResponseException(exc_value, exc_type)
-
+    return status.HTTP_201_CREATED
 
 def run():
     uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info", timeout_keep_alive=5)

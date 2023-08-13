@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3
+FROM --platform=linux/arm64 python:3.8 as build
 
 # Set the working directory to /app
 WORKDIR /app
