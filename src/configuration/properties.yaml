@@ -1,0 +1,19 @@
+# Configurations
+# Open AI Configurations
+openai:
+  apiKey: "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"
+  temperature: 0
+  timeout: 10
+  maxRetry: 2
+  model: "gpt-3.5-turbo"
+text:
+  chunk:
+    size: 100
+    overlap: 20
+pinecone:
+  key: "c527e23b-4afc-492a-a8ed-726fe9a5a9a9"
+  env: "asia-southeast1-gcp-free"
+  collection: "osteoporosis"
+  index: "osteoporosis-index"
+chain:
+  type: "stuff"

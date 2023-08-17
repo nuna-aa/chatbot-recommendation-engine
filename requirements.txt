@@ -1,0 +1,8 @@
+langchain
+openai
+fastapi
+uvicorn
+starlette
+unstructured[local-inference]
+pinecone-client
+tiktoken
