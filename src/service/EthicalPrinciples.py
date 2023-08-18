@@ -1,3 +1,5 @@
+from typing import List
+
 from langchain.chains import ConstitutionalChain
 from langchain.chains.constitutional_ai.models import ConstitutionalPrinciple
 
@@ -19,7 +21,8 @@ class EthicalPrinciples:
     #                                                         "uo-ethics-2", "uo-security-2", "criminal",
     #                                                         "age-innappropriate", "harmful5"])
 
-    __ethical_principles = ConstitutionalChain.get_principles(["uo-implications-2", "harmful1"])
+    __ethical_principles = ConstitutionalChain.get_principles(["uo-implications-2",
+                                                             "age-innappropriate", "harmful5"])
 
     context_principles: list[ConstitutionalPrinciple] = [__only_osteoporosis_content, __non_pharmacological_principle]
 

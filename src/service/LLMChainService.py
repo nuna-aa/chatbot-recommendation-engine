@@ -13,9 +13,9 @@ class ChatModelService:
     def __init__(self, retrival_qa_prompt, constitutional_prompt):
         configurations = cp().get_configuration_properties()
         self.__open_ai_api_key = configurations["openai"]["apiKey"]
-        self.__open_ai_timeout = float(configurations["openai"]["timeout"])
-        self.__open_ai_temperature = float(configurations["openai"]["temperature"])
-        self.__open_ai_max_retry = int(configurations["openai"]["maxRetry"])
+        self.__open_ai_timeout = configurations["openai"]["timeout"]
+        self.__open_ai_temperature = configurations["openai"]["temperature"]
+        self.__open_ai_max_retry = configurations["openai"]["maxRetry"]
         self.__open_ai_model = configurations["openai"]["model"]
         self.__chain_type = configurations["chain"]["type"]
         self.__chat = ChatOpenAI(model_name=self.__open_ai_model, streaming=True,
