@@ -1,0 +1,19 @@
+app:
+  version: 1.0
+openai:
+  apiKey: !ENV ${OPENAI_APIKEY}
+  temperature: !ENV ${OPENAI_TEMPERATURE:0}
+  timeout:  !ENV ${OPENAI_TIMEOUT:10}
+  maxRetry: !ENV ${OPENAI_MAXRETRY:2}
+  model: !ENV ${OPENAI_MODEL:gpt-3.5-turbo}
+text:
+  chunk:
+    size: !ENV ${TEXT_CHUNK_SIZE:100}
+    overlap: !ENV ${TEXT_CHUNK_OVERLAP:20}
+pinecone:
+  key: !ENV ${PINECONE_KEY}
+  env: !ENV ${PINECONE_ENV:asia-southeast1-gcp-free}
+  collection: !ENV ${PINECONE_COLLECTION:osteoporosis}
+  index: !ENV ${PINECONE_INDEX:osteoporosis-index}
+chain:
+  type: !ENV ${CHAIN_TYPE:stuff}
