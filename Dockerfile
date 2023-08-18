@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM --platform=linux/amd64 python:3.9.17-slim-bullseye
 
 # Copy the current directory contents into the container at /app
 COPY ./src /app/src
