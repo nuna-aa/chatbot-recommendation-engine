@@ -1,4 +1,3 @@
-import yaml
 import os
 from pyaml_env import parse_config
 
