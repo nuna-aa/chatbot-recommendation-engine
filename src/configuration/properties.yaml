@@ -1,5 +1,5 @@
 app:
-  version: 1.0
+  version: 1.0.1
 openai:
   apiKey: !ENV ${OPENAI_APIKEY}
   temperature: !ENV ${OPENAI_TEMPERATURE:0}
