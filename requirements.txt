@@ -5,6 +5,4 @@ uvicorn[standard]
 unstructured[local-inference]
 pinecone-client
 tiktoken
-ndg-httpsclient
-pyopenssl
-pyasn1
+pyaml-env

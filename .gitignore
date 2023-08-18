@@ -51,7 +51,16 @@ coverage.xml
 *.iml
 *.ipr
 *.iws
-.idea/
+src/.idea/
+*.DS_Store
+src/.DS_Store
+modules.xml
+.idea/*
 
 # Sphinx documentation
 docs/_build/
+
+# datasources
+src/datasources/
+datasources/
+
