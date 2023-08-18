@@ -6,3 +6,4 @@ starlette
 unstructured[local-inference]
 pinecone-client
 tiktoken
+pyaml-env

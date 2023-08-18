@@ -1,19 +1,19 @@
-# Configurations
-# Open AI Configurations
+app:
+  version: 1.0
 openai:
-  apiKey: "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"
-  temperature: 0
-  timeout: 10
-  maxRetry: 2
-  model: "gpt-3.5-turbo"
+  apiKey: !ENV ${OPENAI_APIKEY}
+  temperature: !ENV ${OPENAI_TEMPERATURE:0}
+  timeout:  !ENV ${OPENAI_TIMEOUT:10}
+  maxRetry: !ENV ${OPENAI_MAXRETRY:2}
+  model: !ENV ${OPENAI_MODEL:gpt-3.5-turbo}
 text:
   chunk:
-    size: 100
-    overlap: 20
+    size: !ENV ${TEXT_CHUNK_SIZE:100}
+    overlap: !ENV ${TEXT_CHUNK_OVERLAP:20}
 pinecone:
-  key: "c527e23b-4afc-492a-a8ed-726fe9a5a9a9"
-  env: "asia-southeast1-gcp-free"
-  collection: "osteoporosis"
-  index: "osteoporosis-index"
+  key: !ENV ${PINECONE_KEY}
+  env: !ENV ${PINECONE_ENV:asia-southeast1-gcp-free}
+  collection: !ENV ${PINECONE_COLLECTION:osteoporosis}
+  index: !ENV ${PINECONE_INDEX:osteoporosis-index}
 chain:
-  type: "stuff"
+  type: !ENV ${CHAIN_TYPE:stuff}

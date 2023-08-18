@@ -4,6 +4,7 @@ from fastapi import FastAPI, Header, HTTPException, status, Depends, Request
 
 from dto.UserMessage import UserMessage as um
 from dto.ChatHistory import ChatHistory as ch
+from dto.HealthStatus import HealthStatus as hs
 from dto.UserMessageRequest import UserMessageRequest as umr
 from service.ChatService import ChatService as orch
 from exception.LLMResponseException import LLMResponseException
@@ -45,6 +46,17 @@ def application_json(content_type: str = Header(...)):
             f"Unsupported media type: {content_type}."
             " It must be application/json",
         )
+
+
+@app.get(
+    "/health",
+    tags=["healthcheck"],
+    summary="Perform a Health Check",
+    response_description="Return HTTP Status Code 200 (OK)",
+    status_code=status.HTTP_200_OK,
+    response_model=hs)
+def getHealth() -> hs:
+    return hs(status="OK")
 
 
 @app.post("/chat", dependencies=[Depends(application_json)], response_model=um)

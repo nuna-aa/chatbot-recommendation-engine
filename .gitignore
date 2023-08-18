@@ -55,7 +55,7 @@ src/.idea/
 *.DS_Store
 src/.DS_Store
 modules.xml
-.idea/workspace.xml
+.idea/*
 
 # Sphinx documentation
 docs/_build/
