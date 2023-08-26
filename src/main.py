@@ -2,10 +2,12 @@ from typing import Any
 
 from fastapi import FastAPI, Header, HTTPException, status, Depends, Request
 
+import asyncio
 from dto.UserMessage import UserMessage as um
 from dto.ChatHistory import ChatHistory as ch
 from dto.HealthStatus import HealthStatus as hs
 from dto.UserMessageRequest import UserMessageRequest as umr
+from dto.SaveFileEmbedding import SaveFileEmbedding as sfe
 from service.ChatService import ChatService as orch
 from exception.LLMResponseException import LLMResponseException
 from exception.ResponseException import ResponseException
@@ -17,6 +19,14 @@ import sys
 
 app = FastAPI()
 reply = orch()
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s:%(name)s: %(message)s",
+    level=logging.INFO,
+    datefmt="%H:%M:%S",
+    stream=sys.stderr,
+)
+logger = logging.getLogger("areq")
 
 
 @app.exception_handler(LLMResponseException)
@@ -60,19 +70,21 @@ def getHealth() -> hs:
 
 
 @app.post("/chat", dependencies=[Depends(application_json)], response_model=um)
-def recommend(message: umr) -> Any:
+async def recommend(message: umr) -> Any:
     try:
+        logging.info("Request: {%s}", message)
         llm_response = reply.recommend(message.message)
     except openai.error.OpenAIError as e:
         raise LLMResponseException(e.http_status, e.user_message, e.code)
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         raise ResponseException(exc_value, exc_type)
+    logging.info("Response: {%s}", llm_response)
     return llm_response
 
 
 @app.get("/chat/history", dependencies=[Depends(application_json)], response_model=ch)
-def recommend() -> Any:
+def get_history() -> Any:
     try:
         history = reply.get_chat_history()
     except openai.error.OpenAIError as e:
@@ -84,7 +96,7 @@ def recommend() -> Any:
 
 
 @app.delete("/chat/history/clear", dependencies=[Depends(application_json)], response_model=ch)
-def recommend() -> Any:
+def delete_history() -> Any:
     try:
         reply.clear_chat_history()
     except openai.error.OpenAIError as e:
@@ -95,15 +107,37 @@ def recommend() -> Any:
 
 
 @app.put("/chat/data/reload", dependencies=[Depends(application_json)])
-def recommend() -> Any:
+async def reload_embeddings() -> Any:
+    asyncio.create_task(process_reload())
+    return  status.HTTP_202_ACCEPTED
+
+
+@app.post("/chat/data/insert", dependencies=[Depends(application_json)])
+def save_file_embedding(fileName: sfe) -> Any:
+    asyncio.create_task(save_one_file(fileName))
+    return status.HTTP_202_ACCEPTED
+
+
+async def save_one_file(fileName):
     try:
-        reply.reload_datasources()
+        collection_id = reply.insert_one_datasource(fileName.fileName)
+        logging.info("File %s successfully saved in collection %s", fileName.fileName, collection_id)
     except openai.error.OpenAIError as e:
         raise LLMResponseException(e.http_status, e.user_message, e.code)
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         raise ResponseException(exc_value, exc_type)
-    return status.HTTP_201_CREATED
+
+
+async def process_reload():
+    try:
+        collection_id = reply.reload_datasources()
+        logging.info("reload successful for collection %s", collection_id)
+    except openai.error.OpenAIError as e:
+        raise LLMResponseException(e.http_status, e.user_message, e.code)
+    except Exception as e:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        raise ResponseException(exc_value, exc_type)
 
 
 if __name__ == "__main__":

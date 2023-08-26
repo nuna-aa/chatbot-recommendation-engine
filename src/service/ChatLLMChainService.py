@@ -1,12 +1,15 @@
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA
 from service.ConfigurationParser import ConfigurationParser as cp
+from langchain.chains import ConversationalRetrievalChain
+from langchain import LLMChain
+from langchain.chains.question_answering import load_qa_chain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 
 
 class ChatModelService:
 
-    def __init__(self, retrival_qa_prompt):
+    def __init__(self, retrival_qa_prompt, vectorstore):
         configurations = cp().get_configuration_properties()
         self.__open_ai_api_key = configurations["openai"]["apiKey"]
         self.__open_ai_timeout = float(configurations["openai"]["timeout"])
@@ -20,7 +23,15 @@ class ChatModelService:
                                  max_retries=self.__open_ai_max_retry)
         self.__memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
         self.__retrival_qa_prompt = retrival_qa_prompt
-        self.__response_exclude_word = "Here is a revised response:\n\nModel:"
+        self.__question_generator = LLMChain(llm=self.__chat, prompt=CONDENSE_QUESTION_PROMPT)
+        self.__doc_chain = load_qa_chain(self.__chat, chain_type=self.__chain_type,
+                                         prompt=self.__retrival_qa_prompt, verbose=True)
+        self.__chain = ConversationalRetrievalChain(
+            retriever=vectorstore.as_retriever(search_type="mmr"),
+            question_generator=self.__question_generator,
+            combine_docs_chain=self.__doc_chain,
+            memory=self.__memory
+        )
 
     def get_chat_history(self):
         return self.__memory.buffer
@@ -28,16 +39,11 @@ class ChatModelService:
     def clear_chat_history(self):
         return self.__memory.clear()
 
-    def retrieval_qa_chain(self, vector_store, question):
-        chain = RetrievalQA.from_chain_type(
-            llm=self.__chat, chain_type=self.__chain_type, retriever=vector_store.as_retriever(search_type="mmr"),
-            chain_type_kwargs={"prompt": self.__retrival_qa_prompt})
-
-        result = chain.run(question)
+    def user_input_chain(self, question):
+        result = self.__chain({"question": question})
 
         print(result)
 
-        if self.__response_exclude_word in result:
-            result = result.split(self.__response_exclude_word, 1)[1]
+        response = result["answer"]
 
-        return result
+        return response

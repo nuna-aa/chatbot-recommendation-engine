@@ -1,0 +1,10 @@
+langchain == 0.0.273
+openai == 0.27.9
+fastapi == 0.99.1
+uvicorn[standard] == 0.23.2
+unstructured[local-inference] == 0.10.5
+tiktoken == 0.4.0
+pyaml-env == 1.2.1
+pinecone-client == 2.2.2
+boto3 == 1.28.34
+chromadb == 0.4.7

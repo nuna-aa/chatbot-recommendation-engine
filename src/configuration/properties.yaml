@@ -1,11 +1,12 @@
 app:
-  version: 1.0.1
+  version: 0.4
 openai:
-  apiKey: !ENV ${OPENAI_APIKEY}
+  apiKey: !ENV ${OPENAI_APIKEY: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}
   temperature: !ENV ${OPENAI_TEMPERATURE:0}
   timeout:  !ENV ${OPENAI_TIMEOUT:10}
   maxRetry: !ENV ${OPENAI_MAXRETRY:2}
   model: !ENV ${OPENAI_MODEL:gpt-3.5-turbo}
+  maxToken: !ENV ${OPENAI_MAXTOKEN:500}
 text:
   chunk:
     size: !ENV ${TEXT_CHUNK_SIZE:100}
@@ -15,5 +16,13 @@ pinecone:
   env: !ENV ${PINECONE_ENV:asia-southeast1-gcp-free}
   collection: !ENV ${PINECONE_COLLECTION:osteoporosis}
   index: !ENV ${PINECONE_INDEX:osteoporosis-index}
+chroma:
+  host: !ENV ${CHROMA_HOST:localhost}
+  port: !ENV ${CHROMA_PORT:8000}
+  collection: !ENV ${CHROMA_COLLECTION:osteoporosis}
+  index: !ENV ${CHROMA_INDEX:osteoporosis-index}
 chain:
   type: !ENV ${CHAIN_TYPE:stuff}
+s3:
+  bucket: !ENV ${S3_BUCKET:osteoporosis-recommendation-datasource}
+

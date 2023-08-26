@@ -3,7 +3,7 @@ from langchain.vectorstores import Pinecone
 from service.ConfigurationParser import ConfigurationParser as cp
 
 
-class VectorStoreRepository:
+class PineconeVectorStoreRepository:
 
     def __init__(self):
         configurations = cp().get_configuration_properties()
@@ -33,7 +33,7 @@ class VectorStoreRepository:
         vectorstore = Pinecone(
             index, embeddings.embed_query, "text"
         )
-        return vectorstore
+        return vectorstore.as_retriever()
 
     def reload_store(self, tokens, embedding):
         pinecone.init(
