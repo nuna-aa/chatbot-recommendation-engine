@@ -1,7 +1,7 @@
 app:
   version: 0.4
 openai:
-  apiKey: !ENV ${OPENAI_APIKEY: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}
+  apiKey: !ENV ${OPENAI_APIKEY}
   temperature: !ENV ${OPENAI_TEMPERATURE:0}
   timeout:  !ENV ${OPENAI_TIMEOUT:10}
   maxRetry: !ENV ${OPENAI_MAXRETRY:2}

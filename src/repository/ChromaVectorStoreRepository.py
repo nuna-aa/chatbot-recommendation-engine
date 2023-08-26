@@ -1,6 +1,5 @@
 import chromadb
 import uuid
-from chromadb.config import Settings
 from langchain.vectorstores import Chroma
 from service.ConfigurationParser import ConfigurationParser as cp
 
