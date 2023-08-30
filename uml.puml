@@ -1,0 +1,113 @@
+@startuml
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class node5 as "UserMessage.UserMessage" {
+   message:
+}
+class node9 as "ChromaVectorStoreRepository.ChromaVectorStoreRepository" {
+   __persistence_port:
+   __collection_name:
+   __persistence_host:
+   __embedding_function:
+   __index_name:
+   __collection:
+   __chroma_http_client:
+   __init__(self, embedding_function):
+   store_one_doc(self, token):
+   get_document_collection(self):
+   reload_store(self, tokens):
+   __insert(self, tokens):
+}
+class node0 as "ChatService.ChatService" {
+   __chain:
+   __retrival_qa_prompt:
+   __rs:
+   __init__(self):
+   recommend(self, user_message):
+   get_chat_history(self):
+   clear_chat_history(self):
+   reload_datasources(self):
+   insert_one_datasource(self, file):
+}
+class node2 as "ConfigurationParser.ConfigurationParser" {
+   __configuration_properties:
+   __file_name:
+   __init__(self):
+   __load_directory(self):
+   __set_configuration_properties(self):
+   get_configuration_properties(self):
+}
+class node10 as "QALLMChainService.ChatModelService" {
+   __open_ai_timeout:
+   __open_ai_temperature:
+   __memory:
+   __open_ai_model:
+   __retrival_qa_prompt:
+   __open_ai_api_key:
+   __chain_type:
+   __chat:
+   __open_ai_max_retry:
+   __init__(self, retrival_qa_prompt):
+   get_chat_history(self):
+   clear_chat_history(self):
+   retrieval_qa_chain(self, question, vector_store):
+}
+class node1 as "RecommendationService.RecommendationService" {
+   __text_splitter:
+   __file_text_loader:
+   __vector_store_repository:
+   __text_embedder:
+   __directory_text_loader:
+   __init__(self):
+   load_embed_store(self):
+   load_embed_store_one_file(self, file_name):
+   get_vector_collection(self):
+}
+class node8 as "RetrievalQAPromptService.RetrievalQAPromptService" {
+   __file_name:
+   __init__(self):
+   __load_system_prompt(self):
+   set_chat_message_prompt(self):
+}
+class node3 as "S3DirectoryTextLoaderService.S3DirectoryTextLoaderService" {
+   __bucket_name:
+   __loader:
+   __init__(self):
+   load(self):
+}
+class node4 as "S3FileTextLoaderService.S3FileTextLoaderService" {
+   __bucket_name:
+   __init__(self):
+   load_one(self, file_name):
+}
+class node7 as "TextEmbedderService.TextEmbedderService" {
+   __open_ai_api_key:
+   embedding_model:
+   __init__(self):
+   embed(self):
+}
+class node6 as "TextSplitterService.TextSplitterService" {
+   __text_splitter:
+   __chunk_overlap:
+   __chunk_size:
+   __init__(self):
+   split(self, documents):
+}
+
+node0 *-- node1
+node0 *-- node8
+node0 *-- node10
+node1 *-- node3
+node1 *-- node4
+node1 *-- node6
+node1 *-- node7
+node1 *-- node9
+node0 o-- node5
+node10 o-- node2
+node4 o-- node2
+node7 o-- node2
+node6 o-- node2
+node3 o-- node2
+@enduml

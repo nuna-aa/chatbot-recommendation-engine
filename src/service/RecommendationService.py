@@ -19,7 +19,7 @@ class RecommendationService:
         tokens = self.__text_splitter.split(datasource_documents)
         return self.__vector_store_repository.reload_store(tokens)
 
-    async def load_embed_store_one_file(self, file_name):
+    def load_embed_store_one_file(self, file_name):
         datasource_document = self.__file_text_loader.load_one(file_name)
         tokens = self.__text_splitter.split(datasource_document)
         return self.__vector_store_repository.store_one_doc(tokens)
