@@ -4,8 +4,6 @@ from pyaml_env import parse_config
 """
 Class to read configurations from Configuration.yaml file
 """
-
-
 class ConfigurationParser:
     """
     Class Initialization method to set the configuration properties variable

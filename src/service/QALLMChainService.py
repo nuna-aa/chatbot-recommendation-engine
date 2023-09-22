@@ -2,9 +2,10 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from service.ConfigurationParser import ConfigurationParser as cp
-import logging
 
-
+"""
+Service to handle LLM chain processing using RetrivalQAChain
+"""
 class ChatModelService:
 
     def __init__(self, retrival_qa_prompt):
@@ -22,16 +23,13 @@ class ChatModelService:
         self.__memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
         self.__retrival_qa_prompt = retrival_qa_prompt
 
-    def get_chat_history(self):
-        return self.__memory.buffer
-
-    def clear_chat_history(self):
-        return self.__memory.clear()
-
+    """
+    LLM generates response based on the question and vector store parameters
+    """
     def retrieval_qa_chain(self, question, vector_store):
         chain = RetrievalQA.from_chain_type(
             llm=self.__chat, chain_type=self.__chain_type, retriever=vector_store.as_retriever(search_type="mmr"),
-            chain_type_kwargs={"prompt": self.__retrival_qa_prompt})
+            chain_type_kwargs={"prompt": self.__retrival_qa_prompt}, verbose=True)
 
         result = chain.run(question)
 

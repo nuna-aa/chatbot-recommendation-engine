@@ -1,10 +1,18 @@
+"""
+Entry point for the application.
+Contains the following controller routes
+/heath - Health check
+/chat - Generate LLM response for user's message
+/chat/data/reload - Reload all embeddings in the vector database
+/chat/data/insert - Insert a single document in the vector database
+"""
+
 from typing import Any
 
 from fastapi import FastAPI, Header, HTTPException, status, Depends, Request
 
 import asyncio
 from dto.UserMessage import UserMessage as um
-from dto.ChatHistory import ChatHistory as ch
 from dto.HealthStatus import HealthStatus as hs
 from dto.UserMessageRequest import UserMessageRequest as umr
 from dto.SaveFileEmbedding import SaveFileEmbedding as sfe
@@ -28,7 +36,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger("areq")
 
-
+"""
+LLM response exception handler
+"""
 @app.exception_handler(LLMResponseException)
 async def openai_client_exception_handler(request: Request, exc: LLMResponseException):
     logging.error("An error occurred", exc_info=True)
@@ -37,7 +47,9 @@ async def openai_client_exception_handler(request: Request, exc: LLMResponseExce
         content={"message": f"{exc.message}", "code": f"{exc.code}"},
     )
 
-
+"""
+Response Exception Handler
+"""
 @app.exception_handler(ResponseException)
 async def openai_client_exception_handler(request: Request, exc: ResponseException):
     logging.error("An error occurred", exc_info=True)
@@ -47,6 +59,9 @@ async def openai_client_exception_handler(request: Request, exc: ResponseExcepti
     )
 
 
+"""
+Request format validator
+"""
 def application_json(content_type: str = Header(...)):
     """Require request MIME-type to be application/json"""
 
@@ -57,7 +72,9 @@ def application_json(content_type: str = Header(...)):
             " It must be application/json",
         )
 
-
+"""
+Health check endpoint
+"""
 @app.get(
     "/health",
     tags=["healthcheck"],
@@ -68,7 +85,9 @@ def application_json(content_type: str = Header(...)):
 def getHealth() -> hs:
     return hs(status="OK")
 
-
+"""
+Chat endpoint to generate LLM response based on a user message
+"""
 @app.post("/chat", dependencies=[Depends(application_json)], response_model=um)
 async def recommend(message: umr) -> Any:
     try:
@@ -82,36 +101,17 @@ async def recommend(message: umr) -> Any:
     logging.info("Response: {%s}", llm_response)
     return llm_response
 
-
-@app.get("/chat/history", dependencies=[Depends(application_json)], response_model=ch)
-def get_history() -> Any:
-    try:
-        history = reply.get_chat_history()
-    except openai.error.OpenAIError as e:
-        raise LLMResponseException(e.http_status, e.user_message, e.code)
-    except Exception as e:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        raise ResponseException(exc_value, exc_type)
-    return history
-
-
-@app.delete("/chat/history/clear", dependencies=[Depends(application_json)], response_model=ch)
-def delete_history() -> Any:
-    try:
-        reply.clear_chat_history()
-    except openai.error.OpenAIError as e:
-        raise LLMResponseException(e.http_status, e.user_message, e.code)
-    except Exception as e:
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        raise ResponseException(exc_value, exc_type)
-
-
+"""
+Endpoint to refresh vector embeddings in the database
+"""
 @app.put("/chat/data/reload", dependencies=[Depends(application_json)])
 async def reload_embeddings() -> Any:
     asyncio.create_task(process_reload())
     return  status.HTTP_202_ACCEPTED
 
-
+"""
+Endpoint to insert a single document in the vector database
+"""
 @app.post("/chat/data/insert", dependencies=[Depends(application_json)])
 def save_file_embedding(fileName: sfe) -> Any:
     asyncio.create_task(save_one_file(fileName))

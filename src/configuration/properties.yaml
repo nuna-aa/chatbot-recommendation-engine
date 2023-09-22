@@ -25,4 +25,3 @@ chain:
   type: !ENV ${CHAIN_TYPE:stuff}
 s3:
   bucket: !ENV ${S3_BUCKET:osteoporosis-recommendation-datasource}
-

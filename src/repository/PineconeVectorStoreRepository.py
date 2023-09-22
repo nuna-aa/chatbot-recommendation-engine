@@ -2,7 +2,9 @@ import pinecone
 from langchain.vectorstores import Pinecone
 from service.ConfigurationParser import ConfigurationParser as cp
 
-
+"""
+Repository to manage pinecone vector database processing
+"""
 class PineconeVectorStoreRepository:
 
     def __init__(self):
@@ -12,6 +14,9 @@ class PineconeVectorStoreRepository:
         self.__persistence_env = configurations["pinecone"]["env"]
         self.__index_name = configurations["pinecone"]["index"]
 
+    """
+    Save embeddings documents in the collection
+    """
     def store(self, tokens, embedding):
         pinecone.init(
             api_key=self.__persistence_key,
@@ -25,6 +30,10 @@ class PineconeVectorStoreRepository:
             )
         return self.reload_store(tokens, embedding)
 
+
+    """
+    Retrieve embedding collection
+    """
     def get_document_collection(self, query, embeddings):
         pinecone.init(
             api_key=self.__persistence_key,
@@ -35,6 +44,9 @@ class PineconeVectorStoreRepository:
         )
         return vectorstore.as_retriever()
 
+    """
+    Refresh embeddings in collection
+    """
     def reload_store(self, tokens, embedding):
         pinecone.init(
             api_key=self.__persistence_key,
